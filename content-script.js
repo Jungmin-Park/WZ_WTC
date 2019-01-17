@@ -18,8 +18,10 @@ records = document.querySelectorAll("#grid > div.k-grid-content-locked > table >
                 workedDay++;
                 datas[0].innerText  = datas[0].innerText.split("(")[0] + "("+ workedDay+"일차)";
                 datas[0].style.color  = "blue";
+                datas[0].style.fontWeight = "bold";
             }else{
                 datas[0].style.color  = "black";
+                datas[0].style.fontWeight = "normal";
             }
         }
     }
