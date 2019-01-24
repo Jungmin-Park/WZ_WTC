@@ -17,9 +17,7 @@
                 font-weight:bold;
             }
             .footer{
-                background-color: #ededed;
-                line-height: 30px;
-                padding-right: 10px;
+                font-size: 12px
             }
             #_result{
                 padding-left: 10px;
@@ -30,6 +28,10 @@
             ul {
                 margin-left: -15px;
             }
+            .icon{
+                width:20px;
+                height: 20px;
+            }
         </style>
     </head>
     <body>
@@ -38,8 +40,13 @@
         </div>
         <div id="_result">그룹웨어 인사/근태 > 근태관리 > 집계현황 페이지로 이동하세요</div>
         
-        <br>
-        <div class="text-right"><a class="btn btn-success btn-sm" id="git_link" style="visibility: hidden;" href="#" >새 버전 확인하기</a>  Ver.<span id='version'></span></div>
+        <div stype="margin-bottom:10px;"></div>
+        <div class="text-right footer">
+            <span id="check_ver" style="visibility: hidden;">
+                <a id="reload_extension" href="#" ><img class="icon" src="extension_resload.png" title="확장프로그램 다시 로드"></a>
+                <a class="btn btn-success btn-sm" id="git_link" href="#" >새 버전 확인하기</a>&nbsp;&nbsp;
+            </span>
+            Ver.<span id='version'></span></div>
         
     </body>
 </html>
