@@ -2,8 +2,10 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <script src="script.js"></script>      
+        <script type="text/javascript" src="jquery-3.3.1.slim.min.js"></script>
+        <script type="text/javascript" src="script.js"></script>      
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
+        
         <style>
             body {
                 width:350px;
@@ -37,7 +39,7 @@
         <div id="_result">그룹웨어 인사/근태 > 근태관리 > 집계현황 페이지로 이동하세요</div>
         
         <br>
-        <div class="text-right">Ver.<span id='version'></span>  <a class="btn btn-success btn-sm" id="git_link" href="#" >새 버전 확인하기</a></div>
+        <div class="text-right"><a class="btn btn-success btn-sm" id="git_link" style="visibility: hidden;" href="#" >새 버전 확인하기</a>  Ver.<span id='version'></span></div>
         
     </body>
 </html>
