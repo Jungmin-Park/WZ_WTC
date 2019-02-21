@@ -1,6 +1,9 @@
+
 chrome.runtime.onMessage.addListener(function(request,sender,response) {
   document.querySelector("#_result").innerHTML = request.message;
 });
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
   var y = document.getElementById("git_link");
@@ -21,13 +24,11 @@ function reloadExtension() {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-  
-//$(document).ready(function(){
   //버전 읽어오기
   var manifestData = chrome.runtime.getManifest();
   var _version = manifestData.version
   document.querySelector("#version").innerText = _version;
-   
+   /*
   //신규 버전 확인
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "https://api.github.com/repos/jungmin-park/wz_wtc/releases", true);
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
   xhr.send();
-
+*/
   chrome.tabs.executeScript({
     file: "content-script.js",
     allFrames: true

@@ -1,8 +1,11 @@
 {
     "name": "WEBZEN Working time Calculator",
-    "version": "20190124",
+    "version": "20190218",
     "description": "누적 근무시간 계산기",
-    "permissions": [ "management","http://gwa.webzen.co.kr/gw/bizbox.do","https://github.com/Jungmin-Park/WZ_WTC/releases"],
+    "permissions": [ "tabs",
+        "management",
+        "http://gwa.webzen.co.kr/gw/bizbox.do",
+        "https://github.com/Jungmin-Park/WZ_WTC/releases"],
     "browser_action":{
         "default_icon": "icon.png",
 		    "default_popup":"popup.html"
