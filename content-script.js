@@ -2,6 +2,7 @@
 function convertMinToHourFormat(mins){
     return (mins < 0 ? "-" : "")+ parseInt(Math.abs(mins) / 60)+ ":" + parseInt(Math.round(Math.abs(mins) % 60)).toString().padStart(2, "0");
 }
+
 /* 시:분 Fortmat 문자열을 분으로 변경 */
 function convertHourFormatToMin(hourFormat){
     return hourFormat.split(":")[0]*60 + hourFormat.split(":")[1]*1
@@ -17,35 +18,70 @@ var message;
     var today = new Date();
     var dd = today.getDate();
     var workedDay = 0;
+	var workedToday = 0;
 	var advanceWorkDay = 0;	//사전 인정 근무일(휴가 등)
 	var totWorkDay = 0;
-    //for (i=0; i < dd ; i++){
+	
+	var lastDate; //기준일
+	var formatted_today = (today.getMonth()+1).toString().padStart(2, "0")+"월 "+ today.getDate().toString().padStart(2, "0")+"일";
+	var todayComeTime;
+	var currentTime = today.getHours()+":"+today.getMinutes();
+	var todayWorkTime= 0 ; //오늘 근무시간
+	var overWorkTime = 0;	//초과근무시간
+	var overWorkTimeToday = 0; //초과 근무시간 오늘까지
+	var basedDay = "어제";	// 기준일
+
 	for (i=0; i < 35 ; i++){
-    record = records[i];
-    if(typeof(record) != 'undefined'){
+		record = records[i];
+		if(typeof(record) != 'undefined'){
             datas = record.querySelectorAll("td");
-            //console.log("|"+datas[3].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") + "|")
+            
 			if(datas[0].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") == "계"){
 				break;
 			}
             if(datas[3].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
-				if( i <=dd)
+				if( i <= dd){
 					workedDay++;
-				else
+				}else{
 					advanceWorkDay++;
-                datas[0].innerText  = datas[0].innerText.split("(")[0] + "("+ workedDay+")";
+				}
+
+				lastDate = datas[0].innerText.split("(")[0] ;
+				datas[0].innerText  = datas[0].innerText.split("(")[0] + "("+ workedDay+")";
                 datas[0].style.color  = "blue";
                 datas[0].style.fontWeight = "bold";
                 datas[0].style.fontSize  = "10px";
+				
             }else{
                 datas[0].style.color  = "inherit";
                 datas[0].style.fontWeight = "normal";
                 datas[0].style.fontSize  = "inherit";
             }
-        }
-    }
+			
+			//if(datas[0].innerText == formatted_today && datas[9].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
+			if(datas[0].innerText == formatted_today){
+				if(datas[9].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
+					todayComeTime = datas[9].innerText;
+					todayWorkTime = convertHourFormatToMin(currentTime)- convertHourFormatToMin(todayComeTime)
+					//점심시간(13~14)이 경과하면 60분 차감
+					if(convertHourFormatToMin(currentTime) > 14*60){
+						todayWorkTime = todayWorkTime - 60;
+					}
+				}
+				if(datas[3].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") == "")
+					workedToday++;
+				else
+					basedDay = "오늘";
+			}
+		}
+		else{
+			break;
+		}
+	}
+	
 	totWorkDay = workedDay+advanceWorkDay;
-    /*당월 잔여 근무일수 */
+    
+	/*당월 잔여 근무일수 */
     str_remainWorkDay =  str_totWorkDay - (totWorkDay);
 
     /*당월 현재진행시간(누적근무시간)*/
@@ -66,17 +102,11 @@ var message;
     avrRemWorkTime = Math.round(convertedreqWorkTime/str_remainWorkDay);
 
     /*초과 근무시간*/
-    overWorkTime = convertedWorkTime - ((totWorkDay) * 480);
-/*
+	overWorkTime = convertedWorkTime - ((totWorkDay) * 480);
+	overWorkTimeToday = (convertedWorkTime + todayWorkTime) - ((totWorkDay + workedToday) * 480)
+	/*			
     message = "<ul>"+
-                "<li>당월 누적 근무일 : "+workedDay+"일 / "+str_totWorkDay+"일</li>"+
-                "<li>당월 누적 근무시간 : "+str_sumWorkTime+" ("+convertedWorkTime+"분)</li>"+
-                "<li>누적 평균 근무시간 : "+convertMinToHourFormat(avrWorkTime)+" ("+avrWorkTime+"분)</li>"+
-                "<li>필요 평균 근무시간 : "+convertMinToHourFormat(avrRemWorkTime)+" ("+avrRemWorkTime+"분)</li>"+
-                "<li>초과근무 시간 : <font style='color:red'>"+convertMinToHourFormat(overWorkTime)+" ("+overWorkTime+"분)</font></li>"+
-            "</ul>"
-*/	
-    message = "<ul>"+
+				"<li>기준일 : "+lastDate+"</li>"+
 				"<li>당월 누적 근무일 : "+workedDay+"일";
 	if(advanceWorkDay >0){
 		message += "("+advanceWorkDay+"일)";
@@ -85,7 +115,49 @@ var message;
                 "<li>당월 누적 근무시간 : "+str_sumWorkTime+" ("+convertedWorkTime+"분)</li>"+
                 "<li>누적 평균 근무시간 : "+convertMinToHourFormat(avrWorkTime)+" ("+avrWorkTime+"분)</li>"+
                 "<li>필요 평균 근무시간 : "+convertMinToHourFormat(avrRemWorkTime)+" ("+avrRemWorkTime+"분)</li>"+
-                "<li>초과근무 시간 : <font style='color:red'>"+convertMinToHourFormat(overWorkTime)+" ("+overWorkTime+"분)</font></li>"+
-            "</ul>"
+				"<li>초과 근무시간 : <font style='color:red'>"+convertMinToHourFormat(overWorkTime)+" ("+overWorkTime+"분)</font></li>"+
+				"</ul>"
+	
+		if(todayComeTime != "" && formatted_today != lastDate ){
+			overWorkTimeToday = (convertedWorkTime + todayWorkTime) - ((totWorkDay+workedToday) * 480)
+			message += "<ul><li>초과 근무시간(오늘까지) : "+convertMinToHourFormat(overWorkTimeToday)+" ("+(overWorkTimeToday)+"분)</li></ul>";
+		}	
+	
+	*/
+	
+	
+	message = "<table id='summary' width='100%'>"+
+				"	<tr>"+
+				"		<th width='50%'>총 근무 시간</th>"+
+				"		<th width='50%'>총 근무 일수</th>"+
+				"	</tr>"+
+				"	<tr>"+
+				"		<td>"+str_sumWorkTime+"</td>"+
+				"		<td>"+workedDay+"일";
+	
+	if(advanceWorkDay >0){
+		message += "("+advanceWorkDay+"일)";
+	}
+	
+	message += 	" / "+str_totWorkDay+"일</td>"+
+				"	</tr>"+
+				"	<tr>"+
+				"		<th>일 평균 근무</th>"+
+				"		<th>잔여 평균 근무</th>"+
+				"	</tr>"+
+				"	<tr>"+
+				"		<td>"+convertMinToHourFormat(avrWorkTime)+"</td>"+
+				"		<td>"+convertMinToHourFormat(avrRemWorkTime)+"</td>"+
+				"	</tr>"+
+				"	<tr>"+
+				"		<th>초과 시간(" + basedDay + "기준)</th>"+
+				"		<th>초과 시간(현재기준)</th>"+
+				"	</tr>"+
+				"	<tr>"+
+				"		<td style='color:" + (overWorkTime < 0 ? "red":"blue") + ";'>"+convertMinToHourFormat(overWorkTime)+"</td>"+
+				"		<td style='color:" + (overWorkTimeToday < 0 ? "red":"blue") + ";'>"+convertMinToHourFormat(overWorkTimeToday)+"</td>"+
+				"	</tr>"+
+				"</table>";
+					
     chrome.runtime.sendMessage({'message': message})
 }

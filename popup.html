@@ -12,6 +12,10 @@
 				font-size:0.9rem;
                 padding:10px;
             }
+			.alert{
+				margin-bottom:0px;
+				line-height:12px;
+			}
             .title{
                 font-size:18px;
                 font-weight:bold;
@@ -20,18 +24,25 @@
                 font-size: 12px
             }
             #_result{
-                padding-left: 10px;
+                padding: 10px;
             }
             #git_link{
                 font-size:10px;
-            }
-            ul {
-                margin-left: -15px;
+                padding: 1px;
             }
             .icon{
-                width:20px;
-                height: 20px;
+                width:16px;
+                height: 16px;
             }
+			#summary th, #summary td
+			{
+				border: 1px solid #ededed;
+				text-align:center;
+			}
+			#summary th
+			{
+				background-color:#F9F9F9;
+			}
         </style>
     </head>
     <body>
@@ -40,7 +51,6 @@
         </div>
         <div id="_result">그룹웨어 인사/근태 > 근태관리 > 집계현황 페이지로 이동하세요</div>
         
-        <div stype="margin-bottom:10px;"></div>
         <div class="text-right footer">
             <span id="check_ver" style="visibility: hidden;">
                 <a id="reload_extension" href="#" ><img class="icon" src="extension_resload.png" title="확장프로그램 다시 로드"></a>
