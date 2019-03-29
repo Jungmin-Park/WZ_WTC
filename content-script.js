@@ -30,7 +30,7 @@ var message;
 	var overWorkTime = 0;	//초과근무시간
 	var overWorkTimeToday = 0; //초과 근무시간 오늘까지
 	var basedDay = "어제";	// 기준일
-
+	var countErrorDay = "";
 	for (i=0; i < 35 ; i++){
 		record = records[i];
 		if(typeof(record) != 'undefined'){
@@ -40,22 +40,37 @@ var message;
 				break;
 			}
             if(datas[3].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
-				if( i <= dd){
+				if( i < dd){
 					workedDay++;
 				}else{
 					advanceWorkDay++;
 				}
 
 				lastDate = datas[0].innerText.split("(")[0] ;
-				datas[0].innerText  = datas[0].innerText.split("(")[0] + "("+ workedDay+")";
+				datas[0].innerText  = datas[0].innerText.split("(")[0] + "("+ (workedDay+advanceWorkDay)+")";
                 datas[0].style.color  = "blue";
                 datas[0].style.fontWeight = "bold";
                 datas[0].style.fontSize  = "10px";
 				
             }else{
-                datas[0].style.color  = "inherit";
-                datas[0].style.fontWeight = "normal";
-                datas[0].style.fontSize  = "inherit";
+				if(datas[2].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
+					if( i < dd-1){
+						datas[0].innerText  = datas[0].innerText.split("(")[0] + "(!)";
+						datas[0].style.color  = "red";
+						datas[0].style.fontWeight = "bold";
+						datas[0].style.fontSize  = "10px";
+						if (countErrorDay != "") 
+							countErrorDay += ", ";
+						countErrorDay += "["+datas[0].innerText.split("(")[0]+"]";
+					}
+				}
+				else
+				{
+				datas[0].style.color  = "inherit";
+				datas[0].style.fontWeight = "normal";
+				datas[0].style.fontSize  = "inherit";
+				}
+
             }
 			
 			//if(datas[0].innerText == formatted_today && datas[9].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
@@ -63,7 +78,7 @@ var message;
 				if(datas[9].innerText.replace(/(\r\n\t|\n|\r\t)/gm, "").replace(" ", "") != ""){
 					todayComeTime = datas[9].innerText;
 					todayWorkTime = convertHourFormatToMin(currentTime)- convertHourFormatToMin(todayComeTime)
-					//점심시간(13~14)이 경과하면 60분 차감
+					//점심시간(13시~14시)이 지난경우 60분 차감
 					if(convertHourFormatToMin(currentTime) > 14*60){
 						todayWorkTime = todayWorkTime - 60;
 					}
@@ -128,8 +143,8 @@ var message;
 	
 	message = "<table id='summary' width='100%'>"+
 				"	<tr>"+
-				"		<th width='50%'>총 근무 시간</th>"+
-				"		<th width='50%'>총 근무 일수</th>"+
+				"		<th width='50%'>근무인정 시간</th>"+
+				"		<th width='50%'>근무인정 일수</th>"+
 				"	</tr>"+
 				"	<tr>"+
 				"		<td>"+str_sumWorkTime+"</td>"+
@@ -154,10 +169,20 @@ var message;
 				"		<th>초과 시간(현재기준)</th>"+
 				"	</tr>"+
 				"	<tr>"+
-				"		<td style='color:" + (overWorkTime < 0 ? "red":"blue") + ";'>"+convertMinToHourFormat(overWorkTime)+"</td>"+
-				"		<td style='color:" + (overWorkTimeToday < 0 ? "red":"blue") + ";'>"+convertMinToHourFormat(overWorkTimeToday)+"</td>"+
+				"		<td style='background:"+ (overWorkTime < 0 ? "#FF9999":"#E5FFCC") +"'>"+convertMinToHourFormat(overWorkTime)+"</td>"+
+				"		<td style='background:"+ (overWorkTimeToday < 0 ? "#FF9999":"#E5FFCC") +"'>"+convertMinToHourFormat(overWorkTimeToday)+"</td>"+
 				"	</tr>"+
 				"</table>";
+				
+	if (countErrorDay != ""){
+		message += 	"<div class='alert alert-danger' style='margin-top:5px'>"+
+					"<strong>!!주의!!</strong><br>"+
+					"<span style='font-weight:500'>"+countErrorDay + "</span>은 근무인정이 되지 않았습니다.<br>"+
+					"세부현황에서 근태 상태를 확인해 주세요"+
+					"</div>";
+        
+	}
 					
     chrome.runtime.sendMessage({'message': message})
 }
+

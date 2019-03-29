@@ -1,6 +1,6 @@
 {
     "name": "WEBZEN Working time Calculator",
-    "version": "20190321",
+    "version": "20190329",
     "description": "근무시간 계산기",
     "permissions": [ "tabs",
         "management",
