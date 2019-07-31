@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <script type="text/javascript" src="jquery-3.3.1.slim.min.js"></script>
-        <script type="text/javascript" src="script.js"></script>      
+        
         <link href="bootstrap.min.css" rel="stylesheet">
         
         <style>
@@ -16,15 +16,15 @@
 				margin-bottom:0px;
 				line-height:12px;
 			}
-			.alert-danger {
-				line-height:20px;
-				padding: 8px;
-			}
             .title{
                 font-size:18px;
                 font-weight:bold;
             }
             .footer{
+                font-size: 12px
+            }
+            #_current_time
+            {
                 font-size: 12px
             }
             #_result{
@@ -38,24 +38,87 @@
                 width:16px;
                 height: 16px;
             }
+
 			#summary th, #summary td
 			{
-				border: 1px solid #ededed;
+				border: 1px solid #eee;
 				text-align:center;
 			}
 			#summary th
 			{
+                font-weight: normal;
 				background-color:#F9F9F9;
 			}
+            .loader,
+            .loader:before,
+            .loader:after {
+            background: #ff8040;
+            -webkit-animation: load1 1s infinite ease-in-out;
+            animation: load1 1s infinite ease-in-out;
+            width: 1em;
+            height: 4em;
+            }
+            .loader {
+            color: #ff8040;
+            text-indent: -9999em;
+            margin: 50px auto;
+            position: relative;
+            font-size: 11px;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation-delay: -0.16s;
+            animation-delay: -0.16s;
+            }
+            .loader:before,
+            .loader:after {
+            position: absolute;
+            top: 0;
+            content: '';
+            }
+            .loader:before {
+            left: -1.5em;
+            -webkit-animation-delay: -0.32s;
+            animation-delay: -0.32s;
+            }
+            .loader:after {
+            left: 1.5em;
+            }
+            @-webkit-keyframes load1 {
+            0%,
+            80%,
+            100% {
+                box-shadow: 0 0;
+                height: 4em;
+            }
+            40% {
+                box-shadow: 0 -2em;
+                height: 5em;
+            }
+            }
+            @keyframes load1 {
+            0%,
+            80%,
+            100% {
+                box-shadow: 0 0;
+                height: 4em;
+            }
+            40% {
+                box-shadow: 0 -2em;
+                height: 5em;
+            }
+            }
+
         </style>
     </head>
     <body>
         <div class="alert alert-primary">
                 <div class="title">근무시간 계산기</div>
         </div>
-        <div id="_result">그룹웨어 인사/근태 > 근태관리 > 집계현황 페이지로 이동하세요</div>
+        <div id="_result"><div class="loader">Loading...</div></div>
         
-        <div class="text-right footer">
+        <div style="float: left;" id="_current_time"> </div>
+        <div class="text-right footer" style="float: right;">
             <span id="check_ver" style="visibility: hidden;">
                 <a id="reload_extension" href="#" ><img class="icon" src="extension_resload.png" title="확장프로그램 다시 로드"></a>
                 <a class="btn btn-success btn-sm" id="git_link" href="#" >새 버전 확인하기</a>&nbsp;&nbsp;
@@ -63,4 +126,5 @@
             Ver.<span id='version'></span></div>
         
     </body>
+    <script type="text/javascript" src="script.js"></script>      
 </html>
